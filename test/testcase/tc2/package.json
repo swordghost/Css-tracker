@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.18.0",
+    "backbone": "^1.3.3",
+    "backbone.marionette": "^3.1.0",
+    "backbone.radio": "^2.0.0",
+    "handlebars": "^4.0.6",
+    "handlebars-loader": "^1.1.4",
+    "jquery": "^3.1.1",
+    "jsx-loader": "^0.13.2",
+    "marionette": "0.0.0",
+    "path": "^0.12.7",
+    "underscore": "^1.8.3",
+    "webpack": "^1.14.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.10"
+  }
+}

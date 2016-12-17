@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="CssTrackerPlugin.popup.action.IJavaElement"
+            objectClass="org.eclipse.jdt.core.IJavaElement">
+         <menu
+               id="CssTrackerPlugin.popup.action.csstracker"
+               label="Css Tracker"
+               path="additions">
+            <separator>
+            </separator>
+         </menu>
+         <action
+               class="csstrackerplugin.popup.actions.MenuAction"
+               enablesFor="1"
+               id="CssTrackerPlugin.newAction"
+               label="builder"
+               menubarPath="CssTrackerPlugin.popup.action.csstracker/group">
+         </action>
+      </objectContribution>
+      <objectContribution
+            id="CssTrackerPlugin.popup.action.IAdaptable"
+            objectClass="org.eclipse.core.runtime.IAdaptable">
+         <menu
+               id="CssTrackerPlugin.popup.action.csstracker"
+               label="Css Tracker"
+               path="additions">
+            <separator>
+            </separator>
+         </menu>
+         <action
+               class="csstrackerplugin.popup.actions.MenuAction"
+               enablesFor="1"
+               id="CssTrackerPlugin.newAction"
+               label="tracker"
+               menubarPath="CssTrackerPlugin.popup.action.csstracker/group">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

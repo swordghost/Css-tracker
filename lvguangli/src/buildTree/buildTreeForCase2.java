@@ -1,4 +1,5 @@
 package buildTree;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,6 +8,7 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
+import sun.security.x509.SerialNumber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,139 +18,145 @@ import java.util.regex.Pattern;
 
 public class buildTreeForCase2 {
 	public static void main(String[] args) throws Exception {
-		String pathRoot = "test/testcase/tc2/src/";
-		String cssfile = "test/testcase/tc2/src/app/inside/view1/view1.scss";
+		String pathRoot = "E:/5上课件/软件分析技术/大作业/Css-tracker/";
+		String cssfile = "/test/testcase/tc2/src/app/inside/view1/view1.scss";
 		String css = "";
 		Object obj = new buildTreeForCase2();
 		((buildTreeForCase2) obj).Tracker(pathRoot, cssfile, css);
 	}
 	
+	
+	public static String workspace; 
 	public String Tracker(String pathRoot, String cssfile, String css) throws IOException {
-		String Controllerpath = getController(pathRoot);
+		workspace = pathRoot;
+		System.out.println(pathRoot);
+		System.out.println(cssfile);
+		
+		String[] filesplit = cssfile.split("/src/");
+		workspace += filesplit[0].substring(1, filesplit[0].length()) + "/src/";
+		cssfile = filesplit[1];
+		String Controllerpath = getController(workspace);
 		Element doc = BuildTree(Controllerpath);
-		String Result = doc2String(doc, cssfile, css);
+		String Result = doc2String(doc, workspace + cssfile, css);
 		return Result;
 	}
-	
-	
-	private String doc2String(Element doc, String cssPath, String cssString) throws IOException{
+
+	private String doc2String(Element doc, String cssPath, String cssString) throws IOException {
 		ArrayList<String> selector = findSelector(cssPath, cssString);
 		StringBuilder sb = new StringBuilder();
-		
-		for (String item: selector){
+		int selNum = 0;
+		for (String item : selector) {
 			String sel = item.split(":")[0];
 			String type = item.split(":")[1];
 			Elements eles = new Elements();
-			if (type.equals("class")){
+			if (type.equals("class")) {
 				eles = doc.getElementsByClass(sel);
 			}
-			if (type.equals("tagName")){
+			if (type.equals("tagName")) {
 				eles.add(doc.getElementById(sel));
 			}
 			
-			for (Element ele: eles){
-				sb.append("Selector(Type:" + type + "  Tag:" + sel + ")\n");
+			for (Element ele : eles) {
+				sb.append("Selector" + selNum + ",Type:" + type + "  Tag:" + sel + "\n");
+				selNum += 1;
 				Elements childs = ele.getAllElements();
-				for (Element child: childs) {
+				for (Element child : childs) {
 					String path = child.attr("filepath").replaceAll("/[./]+", "/");
-					sb.append("child:" + path + ":" + child.tagName() + "\n");
+					System.out.println(path);
+					System.out.println(workspace);
+					path = path.replaceFirst(workspace, "");
+					sb.append(path + "," + child.tagName() + "\n");
 				}
-				
+
 				Elements fathers = ele.parents();
-				for (Element father: fathers){
+				for (Element father : fathers) {
 					String path = father.attr("filepath").replaceAll("/[./]+", "/");
-					sb.append("father:" + path + ":" + father.tagName() + "\n");
+					path = path.replaceFirst(workspace, "");
+					sb.append(path + "," + father.tagName() + "\n");
 				}
 			}
 		}
 		System.out.print(sb.toString());
 		return sb.toString();
 	}
-	
-	private ArrayList<String> findSelector(String csspath, String cssString) throws IOException{
+
+	private ArrayList<String> findSelector(String csspath, String cssString) throws IOException {
 		String scssAll = readFile(csspath);
 		System.out.println(scssAll);
 		Pattern bracket = Pattern.compile("^\\s*(\\S+)\\s+\\{(.*)\\}\\s*$");
 		ArrayList<String> selector = new ArrayList<>();
 		String css = "";
-		while(true){
+		while (true) {
 			Matcher matcher = bracket.matcher(scssAll);
-			if (matcher.find()){
+			if (matcher.find()) {
 				selector.add(matcher.group(1));
 				scssAll = matcher.group(2);
-			}
-			else {
+			} else {
 				css = scssAll;
 				break;
 			}
 		}
 		System.out.println(css);
-		
-		if (css.contains(cssString)){
-			for (int i = 0; i < selector.size(); i++){
+
+		if (css.contains(cssString)) {
+			for (int i = 0; i < selector.size(); i++) {
 				String item = selector.get(i);
-				if (item.contains("."))
-				{
-					item = item.substring(1, item.length()); 
+				if (item.contains(".")) {
+					item = item.substring(1, item.length());
 					item += ":class";
-				}
-				else if (item.contains("#")){
-					item = item.substring(1, item.length()); 
+				} else if (item.contains("#")) {
+					item = item.substring(1, item.length());
 					item += ":tagName";
 				}
-				selector.set(i, item); 
+				selector.set(i, item);
 			}
 		}
 
 		System.out.println(selector);
 		return selector;
 	}
-	
-	
-	private String getController(String pathRoot) throws IOException
-	{
-		Vector<String> app =findImport(pathRoot + "entry.js");
+
+	private String getController(String pathRoot) throws IOException {
+		Vector<String> app = findImport(pathRoot + "entry.js");
 		Vector<String> controller = findImport(pathRoot + app.get(0));
 		String appPath[] = app.get(0).split("/");
-	    System.out.println(appPath[0] + "/" + appPath[1] + "/" + controller.get(1));
+		System.out.println(appPath[0] + "/" + appPath[1] + "/" + controller.get(1));
 		return pathRoot + appPath[0] + "/" + appPath[1] + "/" + controller.get(1);
 	}
-	
-	private Vector<String> findImport(String filename) throws IOException{
+
+	private Vector<String> findImport(String filename) throws IOException {
 		Pattern pattern = Pattern.compile("import \\w+ from '([\\w./]+)'");
-		
+
 		File file = new File(filename);
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 		String content = "";
 		Vector<String> vStrings = new Vector<String>();
-		while(content != null) {
+		while (content != null) {
 			content = bufferedReader.readLine();
-			if (content == null){
+			if (content == null) {
 				break;
 			}
 			Matcher matcher = pattern.matcher(content);
-			if (matcher.find()){
+			if (matcher.find()) {
 				vStrings.add(matcher.group(1));
 			}
 		}
 		bufferedReader.close();
 		return vStrings;
 	}
-	
-	private String returnPath(String path){
+
+	private String returnPath(String path) {
 		String temp[] = path.split("/");
 		String path1 = "";
 		for (int i = 0; i < temp.length - 1; i++)
 			path1 += temp[i] + "/";
 		return path1;
 	}
-	
-	
-	private Element BuildTree(String path) throws IOException
-	{
+
+	private Element BuildTree(String path) throws IOException {
 		Vector<String> views = findImport(path);
 		System.out.println(views.get(0));
-		
+
 		System.out.println(returnPath(path));
 		Element rootDoc = shell(returnPath(path) + views.get(0));
 		for (int i = 1; i < views.size(); i++) {
@@ -157,39 +165,39 @@ public class buildTreeForCase2 {
 			Elements region = rootDoc.getElementsByClass("region" + i);
 			region.get(0).appendChild(view);
 		}
-		
+
 		System.out.println(rootDoc);
 		return rootDoc;
 	}
-	
+
 	private Element shell(String path) throws IOException {
 		Vector<String> importhbs = findImport(path);
 		String hbsname = returnPath(path) + importhbs.get(0);
 		System.out.println(hbsname);
 		File hbsfile = new File(hbsname);
 		Document hbsdoc = Jsoup.parse(hbsfile, "UTF-8", "");
-		
+
 		HashMap<String, String> hMap = new HashMap<>();
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(path));
 		String content = "";
 		Pattern pattern = Pattern.compile("(\\w+): '([\\w\\S]+)'");
-		while(content != null) {
+		while (content != null) {
 			content = bufferedReader.readLine();
-			if (content == null){
+			if (content == null) {
 				break;
 			}
 			Matcher matcher = pattern.matcher(content);
-			if (matcher.find()){
+			if (matcher.find()) {
 				hMap.put(matcher.group(1), matcher.group(2));
 			}
 		}
 		bufferedReader.close();
-		
+
 		Elements eles = hbsdoc.getAllElements();
 		for (Element ele : eles) {
 			ele.attr("filepath", hbsname);
 		}
-		
+
 		Document newDoc = new Document("");
 		Element outerDiv = newDoc.createElement(hMap.get("tagName"));
 		if (hMap.containsKey("id"))
@@ -198,20 +206,18 @@ public class buildTreeForCase2 {
 			outerDiv.attr("class", hMap.get("className"));
 		outerDiv.attr("filepath", path);
 		outerDiv.append(hbsdoc.body().html());
-		
+
 		return outerDiv;
 	}
-	
-	
-	
-	public static String readFile(String filename) throws IOException{
+
+	public static String readFile(String filename) throws IOException {
 		File file = new File(filename);
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 		String content = "";
 		StringBuilder sb = new StringBuilder();
-		while(content != null) {
+		while (content != null) {
 			content = bufferedReader.readLine();
-			if (content == null){
+			if (content == null) {
 				break;
 			}
 			sb.append(content);
@@ -219,5 +225,5 @@ public class buildTreeForCase2 {
 		bufferedReader.close();
 		return sb.toString();
 	}
-	
+
 }

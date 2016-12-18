@@ -91,10 +91,10 @@ public class MenuAction implements IObjectActionDelegate {
 			RowText rowText = (RowText) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("csstrackerplugin.views.RowText");
 			buildTreeForCase2 builder = new buildTreeForCase2();
 			try {
-				MessageDialog.openInformation(
-						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
+//				MessageDialog.openInformation(
+//						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
 				String result = builder.Tracker(workspace , file_path, text);
-				rowText.showResult(result,shell);
+				rowText.showResult(result, workspace, file_path);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

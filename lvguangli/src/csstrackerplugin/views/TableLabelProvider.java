@@ -9,9 +9,9 @@ import org.eclipse.swt.graphics.Image;
 public class TableLabelProvider extends LabelProvider implements ITableLabelProvider {  
         public String getColumnText(Object element, int columnIndex) { 
         	if (columnIndex == 0) {
-        		return element.toString().split(":")[0];
+        		return element.toString().split(",")[0];
         	} else {
-				return element.toString().split(":")[1];
+				return element.toString().split(",")[1];
 			}
         }
         public Image getColumnImage(Object element, int columnIndex) {  

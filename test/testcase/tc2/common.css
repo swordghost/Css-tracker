@@ -1,0 +1,17 @@
+div {
+    border: 1px solid black;
+    margin: 5px;
+    padding: 5px;
+}
+
+button {
+    height: 16px;
+    width: 60px;
+}
+
+pre {
+    background-color: lightgrey;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-bottom: 15px;
+}

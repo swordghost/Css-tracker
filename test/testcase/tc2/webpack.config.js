@@ -32,7 +32,7 @@ let config = {
     resolve: {
         alias: {
             // third-parties
-            // 'backbone': path.resolve(nodeModulesPath, 'backbone.marionette', 'node_modules', 'backbone'),
+            'backbone': path.resolve(nodeModulesPath, 'backbone.marionette', 'node_modules', 'backbone'),
             'marionette': 'backbone.marionette'
         },
         // 现在你require文件的时候可以直接使用require('file')，不用使用require('file.coffee')

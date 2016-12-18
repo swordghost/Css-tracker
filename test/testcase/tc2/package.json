@@ -7,13 +7,18 @@
     "backbone": "^1.3.3",
     "backbone.marionette": "^3.1.0",
     "backbone.radio": "^2.0.0",
+    "file-loader": "^0.9.0",
     "handlebars": "^4.0.6",
     "handlebars-loader": "^1.1.4",
     "jquery": "^3.1.1",
     "jsx-loader": "^0.13.2",
     "marionette": "0.0.0",
+    "node-sass": "^4.0.0",
     "path": "^0.12.7",
+    "sass-loader": "^4.1.0",
+    "style": "0.0.3",
     "underscore": "^1.8.3",
+    "url-loader": "^0.5.7",
     "webpack": "^1.14.0"
   },
   "devDependencies": {

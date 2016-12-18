@@ -1,4 +1,11 @@
 .classpath
 .project
-.settings/*
-bin/*
+.settings
+bin
+.idea
+public
+node_modules
+
+test/testcase/tc2/bundle.js
+
+test/testcase/tc2/bundle.js.map

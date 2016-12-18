@@ -92,7 +92,7 @@ public class MenuAction implements IObjectActionDelegate {
 			buildTreeForCase2 builder = new buildTreeForCase2();
 			try {
 				MessageDialog.openInformation(
-						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
+						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path + " text:" + text);
 				String result = builder.Tracker(workspace , file_path, text);
 				rowText.showResult(result,shell);
 			} catch (IOException e) {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -41,5 +40,21 @@
          </action>
       </objectContribution>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="csstrackerplugin.perspectives.TrackerResults"
+            id="csstrackerplugin.perspectives.TrackerResults"
+            name="TrackerResults">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="csstrackerplugin.views.RowText"
+            id="csstrackerplugin.views.RowText"
+            name="Rowtext"
+            restorable="true">
+      </view>
+   </extension>
 </plugin>

@@ -13,7 +13,7 @@ let App = new (Application.extend({
     },
 
     onStart: function () {
-        this.controller = new InsideController({container: $('#app-main')});
+        this.controller = new InsideController({container: App.layout.container});
         this.controller.showPage();
     }
 }));

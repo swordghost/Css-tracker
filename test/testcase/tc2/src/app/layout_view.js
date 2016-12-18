@@ -5,7 +5,7 @@ import {LayoutView} from 'marionette';
 import template from './layout.hbs';
 
 export default LayoutView.extend({
-    el: 'body',
+    el: '#app-layout',
     template: template,
 
     regions: {

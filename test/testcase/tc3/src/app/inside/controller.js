@@ -15,6 +15,9 @@ export default Marionette.Object.extend({
         this.view = new BaseView();
         this.container.show(this.view);
         this.view.region1.show(new View1());
+        this.view.region1.currentView.on('alarm', function () {
+            alert('来自View1的Alert')
+        });
         this.view.region2.show(new View2());
     }
 });

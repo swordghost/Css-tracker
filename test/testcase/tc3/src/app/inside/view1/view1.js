@@ -10,4 +10,7 @@ export default ItemView.extend({
     tagName: 'div',
     className: 'view1',
     template: Template,
+    triggers: {
+        'click #button': 'alarm'
+    }
 })

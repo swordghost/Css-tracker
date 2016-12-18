@@ -1,5 +1,14 @@
-.view1 {
+.region1 {
   #button {
     background-color: blue;
+    color: white;
+    display: block;
   }
+
+  float: left;
+  width: 45%;
+}
+
+td {
+  padding: 5px;
 }

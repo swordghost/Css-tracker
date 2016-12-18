@@ -6,8 +6,12 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.text.TextSelection;
+
+import java.io.IOException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -19,6 +23,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+
+import buildTree.buildTreeForCase2;
 //import org.eclipse.ui.part.FileEditorInput;
 import csstrackerplugin.views.RowText;
 
@@ -28,6 +34,7 @@ public class MenuAction implements IObjectActionDelegate {
 
 	private Shell shell;
 	private IWorkbenchPart targetPart;  
+	private static String project_path;
 	
 	/**
 	 * Constructor for Action1.
@@ -67,8 +74,6 @@ public class MenuAction implements IObjectActionDelegate {
 
 	
 	void tracker(ISelection selection) {
-//		String title = targetPart.getTitle();
-		getCurrentProject(selection);
         TextSelection textSelection = (TextSelection) selection; 
         String text = textSelection.getText();  
         if (text == null || text.length() == 0) {  
@@ -79,15 +84,23 @@ public class MenuAction implements IObjectActionDelegate {
         int offset = textSelection.getOffset();   
         IEditorPart editor = (IEditorPart) targetPart;
         IEditorInput input = editor.getEditorInput();
-        String path = input.toString().split("\\(|\\)")[1];
-        MessageDialog.openInformation(
-				shell,"CssTrackerPlugin","path:"+path);
-//        TrackerResults trackerResults = new TrackerResults();
+        String workspace =  Platform.getInstanceLocation().getURL().getPath();
+        String file_path = input.toString().split("\\(|\\)")[1];
         try {
         	PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("csstrackerplugin.views.RowText");
 			RowText rowText = (RowText) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("csstrackerplugin.views.RowText");
+			buildTreeForCase2 builder = new buildTreeForCase2();
+			try {
+				MessageDialog.openInformation(
+						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
+				String result = builder.Tracker(workspace , file_path, text);
+				rowText.showResult(result,shell);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			String data = "aaa:AAA\nbbb:BBB\nccc:CCC\n";
-			rowText.showResult(data,shell);
+			
 			
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
@@ -99,7 +112,9 @@ public class MenuAction implements IObjectActionDelegate {
 	void builder(ISelection selection) { 
 		IProject project = getCurrentProject(selection);
 		String path =  Platform.getLocation().toString() + project.getFullPath().toString();
-		MessageDialog.openInformation(shell,"CssTrackerPlugin",path);
+		this.project_path = path;
+		MessageDialog.openInformation(shell,"CssTrackerPlugin",project_path);
+//		buildTreeForCase2
 	}
 	
 	public IProject getCurrentProject(ISelection selection){       

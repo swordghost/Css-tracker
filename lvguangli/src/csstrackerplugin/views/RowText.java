@@ -112,7 +112,7 @@ public class RowText extends ViewPart {
 					IWorkbenchPage wbPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(); 
 					IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject(project).getFile(file_path);
 					if (file.exists()) {
-						IDE.openEditor(wbPage, file, "org.eclipse.jdt.ui.CompilationUnitEditor");
+						IDE.openEditor(wbPage, file);
 					}
 				} catch (CoreException e) {
 					e.printStackTrace();

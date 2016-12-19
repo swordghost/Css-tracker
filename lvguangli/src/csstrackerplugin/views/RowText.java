@@ -108,7 +108,7 @@ public class RowText extends ViewPart {
 					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					String [] paths = file_path.split("/");
 					String project =  paths[1];
-					String file_path = "/"+paths[2] +"/" + paths[3] + "/" +paths[4] + "/"+ text;
+					String file_path = "/"+ text.substring(project.length(), text.length());
 					IWorkbenchPage wbPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(); 
 					IFile file = ResourcesPlugin.getWorkspace().getRoot().getProject(project).getFile(file_path);
 					if (file.exists()) {

@@ -8,8 +8,6 @@ import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
-import sun.security.x509.SerialNumber;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -19,7 +17,7 @@ import java.util.regex.Pattern;
 public class buildTreeForCase2 {
 	public static void main(String[] args) throws Exception {
 		String pathRoot = "E:/5上课件/软件分析技术/大作业/Css-tracker/";
-		String cssfile = "/test/testcase/tc2/src/app/inside/view1/view1.scss";
+		String cssfile = "/test/testcase/tc2/src/app/inside/view2/view2.scss";
 		String css = "";
 		Object obj = new buildTreeForCase2();
 		((buildTreeForCase2) obj).Tracker(pathRoot, cssfile, css);
@@ -27,24 +25,22 @@ public class buildTreeForCase2 {
 	
 	
 	public static String workspace; 
+	public static String workspace2src;
 	public String Tracker(String pathRoot, String cssfile, String css) throws IOException {
 		workspace = pathRoot;
-		System.out.println(pathRoot);
-		System.out.println(cssfile);
-		
 		String[] filesplit = cssfile.split("/src/");
-		workspace += filesplit[0].substring(1, filesplit[0].length()) + "/src/";
+		workspace2src = filesplit[0].substring(1, filesplit[0].length()) + "/src/";
 		cssfile = filesplit[1];
-		String Controllerpath = getController(workspace);
+		String Controllerpath = getController(workspace + workspace2src);
 		Element doc = BuildTree(Controllerpath);
-		String Result = doc2String(doc, workspace + cssfile, css);
+		String Result = doc2String(doc, workspace + workspace2src + cssfile, css);
 		return Result;
 	}
 
 	private String doc2String(Element doc, String cssPath, String cssString) throws IOException {
 		ArrayList<String> selector = findSelector(cssPath, cssString);
 		StringBuilder sb = new StringBuilder();
-		int selNum = 0;
+
 		for (String item : selector) {
 			String sel = item.split(":")[0];
 			String type = item.split(":")[1];
@@ -53,9 +49,12 @@ public class buildTreeForCase2 {
 				eles = doc.getElementsByClass(sel);
 			}
 			if (type.equals("tagName")) {
+				eles.addAll(doc.getElementsByTag(sel));
+			}
+			if (type.equals("id")) {
 				eles.add(doc.getElementById(sel));
 			}
-			
+			int selNum = 0;
 			for (Element ele : eles) {
 				sb.append("Selector" + selNum + ",Type:" + type + "  Tag:" + sel + "\n");
 				selNum += 1;
@@ -106,6 +105,9 @@ public class buildTreeForCase2 {
 					item += ":class";
 				} else if (item.contains("#")) {
 					item = item.substring(1, item.length());
+					item += ":id";
+				}
+				else {
 					item += ":tagName";
 				}
 				selector.set(i, item);

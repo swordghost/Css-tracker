@@ -2,31 +2,20 @@ package csstrackerplugin.views;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.*;
-
-import com.sun.scenario.effect.impl.state.PerspectiveTransformState;
-
-import javafx.scene.shape.Path;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ide.IDE;
@@ -38,16 +27,13 @@ public class RowText extends ViewPart {
 	 */
 	public static final String ID = "csstrackerplugin.views.RowText";
 
-	// private TableViewer viewer;
-	private Composite parent;
-	private List<Label> labels;
 	private TableViewer tableViewer;
 
 	/**
 	 * The constructor.
 	 */
 	public RowText() {
-		labels = new ArrayList<Label>();
+		new ArrayList<Label>();
 	}
 
 	@Override
@@ -66,7 +52,6 @@ public class RowText extends ViewPart {
 		tagTableColumn.setText("TAG");
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		this.parent = parent;
 		this.tableViewer = tableViewer;
 	}
 
@@ -105,7 +90,7 @@ public class RowText extends ViewPart {
 				int rowIndex = table.getSelectionIndex();
 			    String text = table.getItem(rowIndex).getText(0);			     
 				try {
-					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					String [] paths = file_path.split("/");
 					String project =  paths[1];
 					String file_path = "/"+ text.substring(project.length(), text.length());
@@ -120,7 +105,11 @@ public class RowText extends ViewPart {
 
 			}
 		});
-		
+
 		tableViewer.setInput(list);
+	}
+	public void clearResult() {
+		Table table = tableViewer.getTable();
+		table.clearAll();
 	}
 }

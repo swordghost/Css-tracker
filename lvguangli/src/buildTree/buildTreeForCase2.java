@@ -40,7 +40,7 @@ public class buildTreeForCase2 {
 	private String doc2String(Element doc, String cssPath, String cssString) throws IOException {
 		ArrayList<String> selector = findSelector(cssPath, cssString);
 		StringBuilder sb = new StringBuilder();
-
+		int selNum = 1;
 		for (String item : selector) {
 			String sel = item.split(":")[0];
 			String type = item.split(":")[1];
@@ -54,7 +54,7 @@ public class buildTreeForCase2 {
 			if (type.equals("id")) {
 				eles.add(doc.getElementById(sel));
 			}
-			int selNum = 0;
+			
 			for (Element ele : eles) {
 				sb.append("Selector" + selNum + ",Type:" + type + "  Tag:" + sel + "\n");
 				selNum += 1;

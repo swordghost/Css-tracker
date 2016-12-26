@@ -1,9 +1,12 @@
 package buildTree;
 
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+
 import org.jsoup.*;
 import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
@@ -17,8 +20,8 @@ import java.util.regex.Pattern;
 public class buildTreeForCase2 {
 	public static void main(String[] args) throws Exception {
 		String pathRoot = "E:/5上课件/软件分析技术/大作业/Css-tracker/";
-		String cssfile = "/test/testcase/tc2/src/app/inside/view2/view2.scss";
-		String css = "";
+		String cssfile = "/test/testcase/tc3/src/app/inside/view2/view2.scss";
+		String css = "float";
 		Object obj = new buildTreeForCase2();
 		((buildTreeForCase2) obj).Tracker(pathRoot, cssfile, css);
 	}
@@ -31,8 +34,11 @@ public class buildTreeForCase2 {
 		String[] filesplit = cssfile.split("/src/");
 		workspace2src = filesplit[0].substring(1, filesplit[0].length()) + "/src/";
 		cssfile = filesplit[1];
+		//浠ntry.js涓哄叆鍙ｏ紝鎵惧埌controller.js
 		String Controllerpath = getController(workspace + workspace2src);
+		//寤烘爲
 		Element doc = BuildTree(Controllerpath);
+		//鍦ㄦ爲涓悳绱SS
 		String Result = doc2String(doc, workspace + workspace2src + cssfile, css);
 		return Result;
 	}
@@ -41,38 +47,52 @@ public class buildTreeForCase2 {
 		ArrayList<String> selector = findSelector(cssPath, cssString);
 		StringBuilder sb = new StringBuilder();
 		int selNum = 1;
+		
+		Elements eles = new Elements();
+		eles.add(doc);
 		for (String item : selector) {
 			String sel = item.split(":")[0];
 			String type = item.split(":")[1];
-			Elements eles = new Elements();
-			if (type.equals("class")) {
-				eles = doc.getElementsByClass(sel);
-			}
-			if (type.equals("tagName")) {
-				eles.addAll(doc.getElementsByTag(sel));
-			}
-			if (type.equals("id")) {
-				eles.add(doc.getElementById(sel));
+			Elements tempeles = new Elements();
+			for (Element ele: eles){
+				if (type.equals("class")) {
+					tempeles.addAll(ele.getElementsByClass(sel));
+				}
+				if (type.equals("tagName")) {
+					tempeles.addAll(ele.getElementsByTag(sel));
+				}
+				if (type.equals("id")) {
+					System.out.println("11111");
+					tempeles.add(ele.getElementById(sel));
+				}
+				eles = tempeles;
 			}
 			
-			for (Element ele : eles) {
-				sb.append("Selector" + selNum + ",Type:" + type + "  Tag:" + sel + "\n");
-				selNum += 1;
-				Elements childs = ele.getAllElements();
-				for (Element child : childs) {
-					String path = child.attr("filepath").replaceAll("/[./]+", "/");
-					System.out.println(path);
-					System.out.println(workspace);
-					path = path.replaceFirst(workspace, "");
-					sb.append(path + "," + child.tagName() + "\n");
-				}
+			//System.out.println("eles\n" + eles);
+		}
+		for (Element ele : eles) {
+			
+			sb.append("Selector" + selNum + ",");
+			for (String item : selector){
+				String sel = item.split(":")[0];
+				String type = item.split(":")[1];
+				sb.append("Type:" + type + " Tag:" + sel + "  ");
+			}
+			sb.append("\n");
+			selNum += 1;
+			Elements childs = ele.getAllElements();
+			for (Element child : childs) {
+				String path = child.attr("filepath").replaceAll("/[./]+", "/");
+				//System.out.println(path);
+				path = path.replaceFirst(workspace, "");
+				sb.append(path + "," + child.tagName() + "\n");
+			}
 
-				Elements fathers = ele.parents();
-				for (Element father : fathers) {
-					String path = father.attr("filepath").replaceAll("/[./]+", "/");
-					path = path.replaceFirst(workspace, "");
-					sb.append(path + "," + father.tagName() + "\n");
-				}
+			Elements fathers = ele.parents();
+			for (Element father : fathers) {
+				String path = father.attr("filepath").replaceAll("/[./]+", "/");
+				path = path.replaceFirst(workspace, "");
+				sb.append(path + "," + father.tagName() + "\n");
 			}
 		}
 		System.out.print(sb.toString());
@@ -82,24 +102,54 @@ public class buildTreeForCase2 {
 	private ArrayList<String> findSelector(String csspath, String cssString) throws IOException {
 		String scssAll = readFile(csspath);
 		System.out.println(scssAll);
-		Pattern bracket = Pattern.compile("^\\s*(\\S+)\\s+\\{(.*)\\}\\s*$");
-		ArrayList<String> selector = new ArrayList<>();
-		String css = "";
-		while (true) {
-			Matcher matcher = bracket.matcher(scssAll);
-			if (matcher.find()) {
-				selector.add(matcher.group(1));
-				scssAll = matcher.group(2);
-			} else {
-				css = scssAll;
-				break;
-			}
-		}
-		System.out.println(css);
+		Pattern bracket = Pattern.compile("\\s*(\\S+)\\s+\\{([^\\{^\\}]*)\\}\\s*");
+		Pattern innerbracket = Pattern.compile("\\s*(\\S+)\\s+\\{(.*)\\}\\s*(\\S*)\\s*");
 
-		if (css.contains(cssString)) {
-			for (int i = 0; i < selector.size(); i++) {
-				String item = selector.get(i);
+		HashMap<String, String> style_sel = new HashMap<String, String>();
+		ArrayList<String> selector = new ArrayList<>(); 
+		String scss = "";
+		while (true){
+			Matcher matcher = bracket.matcher(scssAll);
+			ArrayList<String> seList = new ArrayList<>();  
+			if (matcher.find()){
+				scss = matcher.group(0);
+				scssAll = scssAll.replace(scss, "");
+				
+				while(true){
+					Matcher matcher2 = innerbracket.matcher(scss);
+					String style = "";
+					if (matcher2.find()) {
+						seList.add(matcher2.group(1));
+						scss = matcher2.group(2);
+						if (!matcher2.group(3).equals("")){
+							String sel = "";
+							for (String t: seList)
+								sel += t;
+							style = matcher2.group(3);
+							style_sel.put(scss, sel);
+						}
+					}
+					else {
+						String sel = "";
+						for (String t: seList)
+							sel += t;
+						style = scss;
+						System.out.println("style:" + style);
+						System.out.println("sel:" + sel);
+						style_sel.put(scss, sel);
+						break;
+					}
+					
+				}
+				
+			}
+			else break;
+		}
+		System.out.println("style_sel" + style_sel);
+		
+		for (String style: style_sel.keySet()){
+			if (style.contains(cssString)) {
+				String item = style_sel.get(style);
 				if (item.contains(".")) {
 					item = item.substring(1, item.length());
 					item += ":class";
@@ -110,7 +160,7 @@ public class buildTreeForCase2 {
 				else {
 					item += ":tagName";
 				}
-				selector.set(i, item);
+				selector.add(item);
 			}
 		}
 

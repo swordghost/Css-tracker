@@ -19,9 +19,15 @@ import java.util.regex.Pattern;
 
 public class buildTreeForCase2 {
 	public static void main(String[] args) throws Exception {
+//<<<<<<< HEAD
 		String pathRoot = "E:/5上课件/软件分析技术/大作业/Css-tracker/";
 		String cssfile = "/test/testcase/tc3/src/app/inside/view2/view2.scss";
 		String css = "float";
+//=======
+//		String pathRoot = "E:/5涓婅浠�/杞欢鍒嗘瀽鎶�鏈�/澶т綔涓�/Css-tracker/";
+//		String cssfile = "/test/testcase/tc2/src/app/inside/view2/view2.scss";
+//		String css = "";
+//>>>>>>> a221e115248ac61616b13ca87c5319d530fa6c0d
 		Object obj = new buildTreeForCase2();
 		((buildTreeForCase2) obj).Tracker(pathRoot, cssfile, css);
 	}
@@ -34,11 +40,19 @@ public class buildTreeForCase2 {
 		String[] filesplit = cssfile.split("/src/");
 		workspace2src = filesplit[0].substring(1, filesplit[0].length()) + "/src/";
 		cssfile = filesplit[1];
-		//浠ntry.js涓哄叆鍙ｏ紝鎵惧埌controller.js
+//<<<<<<< HEAD
+//		//浠ntry.js涓哄叆鍙ｏ紝鎵惧埌controller.js
+//		String Controllerpath = getController(workspace + workspace2src);
+//		//寤烘爲
+//		Element doc = BuildTree(Controllerpath);
+//		//鍦ㄦ爲涓悳绱SS
+//=======
+		//以entry.js为入口，找到controller.js
 		String Controllerpath = getController(workspace + workspace2src);
-		//寤烘爲
+		//建树
 		Element doc = BuildTree(Controllerpath);
-		//鍦ㄦ爲涓悳绱SS
+		//在树中搜索CSS
+//>>>>>>> a221e115248ac61616b13ca87c5319d530fa6c0d
 		String Result = doc2String(doc, workspace + workspace2src + cssfile, css);
 		return Result;
 	}
@@ -256,7 +270,7 @@ public class buildTreeForCase2 {
 			outerDiv.attr("id", hMap.get("id"));
 		if (hMap.containsKey("className"))
 			outerDiv.attr("class", hMap.get("className"));
-		outerDiv.attr("filepath", path);
+		outerDiv.attr(" ", path);
 		outerDiv.append(hbsdoc.body().html());
 
 		return outerDiv;

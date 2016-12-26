@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class buildTreeForCase2 {
 	public static void main(String[] args) throws Exception {
-		String pathRoot = "E:/5上课件/软件分析技术/大作业/Css-tracker/";
+		String pathRoot = "E:/5涓婅浠�/杞欢鍒嗘瀽鎶�鏈�/澶т綔涓�/Css-tracker/";
 		String cssfile = "/test/testcase/tc2/src/app/inside/view2/view2.scss";
 		String css = "";
 		Object obj = new buildTreeForCase2();
@@ -31,8 +31,11 @@ public class buildTreeForCase2 {
 		String[] filesplit = cssfile.split("/src/");
 		workspace2src = filesplit[0].substring(1, filesplit[0].length()) + "/src/";
 		cssfile = filesplit[1];
+		//以entry.js为入口，找到controller.js
 		String Controllerpath = getController(workspace + workspace2src);
+		//建树
 		Element doc = BuildTree(Controllerpath);
+		//在树中搜索CSS
 		String Result = doc2String(doc, workspace + workspace2src + cssfile, css);
 		return Result;
 	}
@@ -40,7 +43,7 @@ public class buildTreeForCase2 {
 	private String doc2String(Element doc, String cssPath, String cssString) throws IOException {
 		ArrayList<String> selector = findSelector(cssPath, cssString);
 		StringBuilder sb = new StringBuilder();
-
+		int selNum = 0;
 		for (String item : selector) {
 			String sel = item.split(":")[0];
 			String type = item.split(":")[1];
@@ -54,7 +57,7 @@ public class buildTreeForCase2 {
 			if (type.equals("id")) {
 				eles.add(doc.getElementById(sel));
 			}
-			int selNum = 0;
+			
 			for (Element ele : eles) {
 				sb.append("Selector" + selNum + ",Type:" + type + "  Tag:" + sel + "\n");
 				selNum += 1;
@@ -206,7 +209,7 @@ public class buildTreeForCase2 {
 			outerDiv.attr("id", hMap.get("id"));
 		if (hMap.containsKey("className"))
 			outerDiv.attr("class", hMap.get("className"));
-		outerDiv.attr("filepath", path);
+		outerDiv.attr(" ", path);
 		outerDiv.append(hbsdoc.body().html());
 
 		return outerDiv;

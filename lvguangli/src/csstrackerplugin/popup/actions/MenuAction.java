@@ -11,7 +11,6 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -30,11 +29,11 @@ import csstrackerplugin.views.RowText;
 
 
 
+@SuppressWarnings("restriction")
 public class MenuAction implements IObjectActionDelegate {
 
 	private Shell shell;
 	private IWorkbenchPart targetPart;  
-	private static String project_path;
 	
 	/**
 	 * Constructor for Action1.
@@ -76,12 +75,14 @@ public class MenuAction implements IObjectActionDelegate {
 	void tracker(ISelection selection) {
         TextSelection textSelection = (TextSelection) selection; 
         String text = textSelection.getText();  
-        if (text == null || text.length() == 0) {  
+        if (text == null || text.length() == 0) { 
+        	RowText rowText = (RowText) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("csstrackerplugin.views.RowText");
+			rowText.clearResult();
             return;  
         }   
-        int startLine = textSelection.getStartLine(); 
-        int length = textSelection.getLength();
-        int offset = textSelection.getOffset();   
+        textSelection.getStartLine(); 
+        textSelection.getLength();
+        textSelection.getOffset();   
         IEditorPart editor = (IEditorPart) targetPart;
         IEditorInput input = editor.getEditorInput();
         String workspace =  Platform.getInstanceLocation().getURL().getPath();
@@ -94,12 +95,13 @@ public class MenuAction implements IObjectActionDelegate {
 //				MessageDialog.openInformation(
 //						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
 				String result = builder.Tracker(workspace , file_path, text);
+				System.out.println("result:" + result);
 				rowText.showResult(result, workspace, file_path);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				rowText.showResult("", workspace, file_path);
 			}
-			String data = "aaa:AAA\nbbb:BBB\nccc:CCC\n";
 			
 			
 		} catch (PartInitException e) {
@@ -112,8 +114,7 @@ public class MenuAction implements IObjectActionDelegate {
 	void builder(ISelection selection) { 
 		IProject project = getCurrentProject(selection);
 		String path =  Platform.getLocation().toString() + project.getFullPath().toString();
-		this.project_path = path;
-		MessageDialog.openInformation(shell,"CssTrackerPlugin",project_path);
+		MessageDialog.openInformation(shell,"CssTrackerPlugin",path);
 //		buildTreeForCase2
 	}
 	

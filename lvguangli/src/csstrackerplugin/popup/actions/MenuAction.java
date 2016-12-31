@@ -92,8 +92,6 @@ public class MenuAction implements IObjectActionDelegate {
 			RowText rowText = (RowText) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("csstrackerplugin.views.RowText");
 			buildTreeForCase2 builder = new buildTreeForCase2();
 			try {
-//				MessageDialog.openInformation(
-//						shell,"CssTrackerPlugin","workspace:"+workspace + " file_path:"+ file_path);
 				String result = builder.Tracker(workspace , file_path, text);
 				System.out.println("result:" + result);
 				rowText.showResult(result, workspace, file_path);
@@ -118,7 +116,7 @@ public class MenuAction implements IObjectActionDelegate {
 //		buildTreeForCase2
 	}
 	
-	public IProject getCurrentProject(ISelection selection){       
+	private IProject getCurrentProject(ISelection selection){       
         IProject project = null;    
         if(selection instanceof IStructuredSelection) {    
             Object element = ((IStructuredSelection)selection).getFirstElement();
